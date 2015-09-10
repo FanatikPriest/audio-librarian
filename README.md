@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/FanatikPriest/audio_librarian.svg?branch=master)](https://travis-ci.org/FanatikPriest/audio_librarian)
+[![Coverage Status](https://coveralls.io/repos/FanatikPriest/audio_librarian/badge.svg?branch=master&service=github)](https://coveralls.io/github/FanatikPriest/audio_librarian?branch=master)
 # AudioLibrarian
 
 A tool for automatic mp3 reorganization and tagging
