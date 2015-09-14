@@ -18,7 +18,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install audio-librarian
+    $ gem install audio_librarian
 
 ## Usage
 

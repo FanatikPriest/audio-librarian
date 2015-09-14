@@ -1,5 +1,9 @@
 require "audio_librarian/version"
 
+require "audio_librarian/song"
+
 module AudioLibrarian
-  # Your code goes here...
+  def do_something
+    puts "It works!"
+  end
 end
