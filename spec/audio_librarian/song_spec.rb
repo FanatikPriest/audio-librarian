@@ -91,4 +91,35 @@ describe AudioLibrarian::Song do
     end
   end
 
+  describe "#check_case!" do
+    it 'titleizes the text tags' do
+      @song.title        = "title"
+      @song.album        = "album"
+      @song.artist       = "artist"
+      @song.album_artist = "album artist"
+      @song.genre        = "genre"
+
+      @song.check_case!
+
+      expect(@song.title).to        eq("Title")
+      expect(@song.album).to        eq("Album")
+      expect(@song.artist).to       eq("Artist")
+      expect(@song.album_artist).to eq("Album Artist")
+      expect(@song.genre).to        eq("Genre")
+    end
+
+    it 'titleizes the single text tag there is' do
+      @song.title = "title"
+
+      @song.check_case!
+
+      expect(@song.title).to        eq("Title")
+
+      expect(@song.album).to        be_nil
+      expect(@song.artist).to       be_nil
+      expect(@song.album_artist).to be_nil
+      expect(@song.genre).to        be_nil
+    end
+  end
+
 end

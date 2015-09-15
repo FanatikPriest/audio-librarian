@@ -1,4 +1,5 @@
 require 'overrides/mp3info'
+require 'titleize'
 
 class AudioLibrarian::Song
 
@@ -58,6 +59,13 @@ class AudioLibrarian::Song
     pictures = @id3.tag2.pictures
 
     pictures.first.last if pictures.size > 0
+  end
+
+  def check_case!
+    %w[title album artist album_artist genre].each do |tag|
+      value = send tag
+      send(tag + "=", value.downcase.titleize) unless value.nil?
+    end
   end
 
   private
