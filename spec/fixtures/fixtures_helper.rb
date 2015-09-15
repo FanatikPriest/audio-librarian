@@ -1,6 +1,10 @@
-FIXTURES = YAML::load_file( File.join(File.dirname(__FILE__), "mp3.yml") )
+require 'tempfile'
 
-TEMP_MP3_FILE = File.join(File.dirname(__FILE__), "test_mp3info.mp3")
+MP3_FIXTURES = YAML::load_file( File.join(File.dirname(__FILE__), "mp3.yml"))
+JPG_FIXTURES = YAML::load_file( File.join(File.dirname(__FILE__), "jpg.yml"))
+
+TEMP_MP3_FILE = Tempfile.new "test_mp3info.mp3"
+TEMP_JPG_FILE = Tempfile.new "test_cover.jpg"
 
 def load_mp3_fixture(fixture_key, zlibed = true)
   # Command to create a gzip'ed dummy MP3
@@ -14,7 +18,7 @@ def load_mp3_fixture(fixture_key, zlibed = true)
   # this will generate a #{mp3_length} sec mp3 file (44100hz*16bit*2channels) = 60/4 = 15
   # system("dd if=/dev/urandom bs=44100 count=#{mp3_length*4}  2>/dev/null | \
   #        lame -v -m s --vbr-new --preset 128 -r -s 44.1 --bitwidth 16 - -  > #{TEMP_FILE} 2>/dev/null")
-  content = FIXTURES[fixture_key]
+  content = MP3_FIXTURES[fixture_key]
 
   if zlibed
     content = Zlib::Inflate.inflate(content)
@@ -25,6 +29,13 @@ def load_mp3_fixture(fixture_key, zlibed = true)
   end
 end
 
-def unload_mp3_fixture
+def load_jpg_fixture
+  File.open(TEMP_JPG_FILE, "w") do |f|
+    f.write JPG_FIXTURES
+  end
+end
+
+def unload_fixtures
   FileUtils.rm_f TEMP_MP3_FILE
+  FileUtils.rm_f TEMP_JPG_FILE
 end

@@ -43,6 +43,23 @@ class AudioLibrarian::Song
     @id3.tag.genre_s
   end
 
+  def cover= image_file
+    @id3.tag2.remove_pictures
+
+    options = {
+      description: "cover",
+      pic_type:    3
+    }
+
+    @id3.tag2.add_picture(File.open(image_file, "rb").read, options)
+  end
+
+  def cover
+    pictures = @id3.tag2.pictures
+
+    pictures.first.last if pictures.size > 0
+  end
+
   private
 
   def read_tpos

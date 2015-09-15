@@ -6,22 +6,20 @@ describe AudioLibrarian::Song do
     @song = AudioLibrarian::Song.new TEMP_MP3_FILE
   end
 
+  def update_song
+    @song.save_tags
+    load_song
+  end
+
   before :example do
     load_mp3_fixture "empty_mp3"
+    load_jpg_fixture
 
     load_song
   end
 
   after :example do
-    unload_mp3_fixture
-  end
-
-  it 'saves tags to the file' do
-    @song.title = "title"
-
-    @song.save_tags
-
-    expect(@song.title).to eql("title")
+    unload_fixtures
   end
 
   it 'has modifiable tags' do
@@ -50,8 +48,7 @@ describe AudioLibrarian::Song do
     @song.disc_number = 1
     @song.disc_total  = 2
 
-    @song.save_tags
-    load_song
+    update_song
 
     expect(@song.disc_number).to eq(1)
     expect(@song.disc_total).to  eq(2)
@@ -63,8 +60,7 @@ describe AudioLibrarian::Song do
     @song.track_number = 1
     @song.track_total  = 12
 
-    @song.save_tags
-    load_song
+    update_song
 
     expect(@song.track_number).to eq(1)
     expect(@song.track_total).to  eq(12)
@@ -75,11 +71,24 @@ describe AudioLibrarian::Song do
   it "saves track number without track total tags" do
     @song.track_number = 1
 
-    @song.save_tags
-    load_song
+    update_song
 
     expect(@song.track_number).to eq(1)
     expect(@song.id3.tag2["TRCK"]).to eq("1")
+  end
+
+  describe "#cover" do
+    it 'returns nil if no cover has been set' do
+      expect(@song.cover).to be_nil
+    end
+
+    it 'can have a cover image' do
+      @song.cover = TEMP_JPG_FILE.path
+
+      update_song
+
+      expect(@song.cover).to_not be_nil
+    end
   end
 
 end
