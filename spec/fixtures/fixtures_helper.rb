@@ -10,11 +10,11 @@ def load_mp3_fixture(file = TEMP_MP3_FILE, key = "empty_mp3")
   load_file_fixture file, Zlib::Inflate.inflate(MP3_FIXTURES[key])
 end
 
-def load_empty_mp3 file
+def load_empty_mp3(file = TEMP_MP3_FILE)
   load_mp3_fixture file, "empty_mp3"
 end
 
-def load_tagged_mp3 file
+def load_tagged_mp3(file = TEMP_MP3_FILE)
   load_mp3_fixture file, "with_tags"
 end
 

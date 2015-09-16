@@ -98,6 +98,10 @@ describe AudioLibrarian::Album do
       expect(File.exists? @album.big_cover).to be(true)
     end
 
+    it "copies the cover as a folder image" do
+      expect(File.exists? File.join(@album_dir, "folder.jpg")).to be(true)
+    end
+
     describe "#check_case!" do
       it "modifies the text tags" do
         @album.title        = "title"
@@ -120,7 +124,5 @@ describe AudioLibrarian::Album do
   it "manipulates with multiple discs"
 
   it "generates cover from the big cover"
-
-  it "copies the cover as a folder image"
 
 end

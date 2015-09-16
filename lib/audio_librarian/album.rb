@@ -4,7 +4,7 @@ require 'audio_librarian/song'
 
 class AudioLibrarian::Album
 
-  attr_reader   :dir, :songs, :cover, :big_cover
+  attr_reader   :dir, :songs, :cover, :big_cover, :folder_image
   attr_accessor :title, :artist, :album_artist, :year, :genre
 
   def initialize path
@@ -56,9 +56,17 @@ class AudioLibrarian::Album
   private
 
   def load_cover_images
-    cover_path = File.join(@dir.path, "cover.jpg")
     @cover     = Dir["#{@dir.path}/cover.{jpg,png}"].first
     @big_cover = Dir["#{@dir.path}/big cover.{jpg,png}"].first
+
+    if @cover
+      pic_type          = Pathname.new(@cover).extname
+      folder_image_path = File.join(@dir, "folder#{pic_type}")
+
+      FileUtils.rm_f folder_image_path
+      FileUtils.cp @cover, folder_image_path
+      @folder_image = folder_image_path
+    end
   end
 
 end
