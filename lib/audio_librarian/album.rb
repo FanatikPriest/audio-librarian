@@ -4,7 +4,7 @@ require 'audio_librarian/song'
 
 class AudioLibrarian::Album
 
-  attr_reader   :dir, :songs
+  attr_reader   :dir, :songs, :cover, :big_cover
   attr_accessor :title, :artist, :album_artist, :year, :genre
 
   def initialize path
@@ -14,6 +14,7 @@ class AudioLibrarian::Album
 
     reload_songs
     extract_data
+    load_cover_images
   end
 
   def reload_songs
@@ -41,14 +42,23 @@ class AudioLibrarian::Album
 
   def update_songs_tags
     songs.each do |song|
-      song.album = @title
-      song.artist = @artist
+      song.album        = @title
+      song.artist       = @artist
       song.album_artist = @album_artist
-      song.year = @year
-      song.genre = @genre
+      song.year         = @year
+      song.genre        = @genre
+      song.cover        = @cover
 
       song.save_tags
     end
+  end
+
+  private
+
+  def load_cover_images
+    cover_path = File.join(@dir.path, "cover.jpg")
+    @cover     = Dir["#{@dir.path}/cover.{jpg,png}"].first
+    @big_cover = Dir["#{@dir.path}/big cover.{jpg,png}"].first
   end
 
 end

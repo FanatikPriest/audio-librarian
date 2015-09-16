@@ -2,8 +2,18 @@ require 'spec_helper'
 
 describe AudioLibrarian::Album do
 
+  def load_album
+    @album = AudioLibrarian::Album.new @album_dir
+  end
+
   before :example do
     @album_dir = Dir.mktmpdir
+
+    @cover_file     = File.join(@album_dir, "cover.jpg")
+    @big_cover_file = File.join(@album_dir, "big cover.jpg")
+
+    load_jpg_fixture @cover_file
+    load_jpg_fixture @big_cover_file
   end
 
   after :example do
@@ -22,7 +32,7 @@ describe AudioLibrarian::Album do
 
       load_tagged_mp3 @mp3_file
 
-      @album = AudioLibrarian::Album.new @album_dir
+      load_album
     end
 
     it "has a path to a directory" do
@@ -74,6 +84,20 @@ describe AudioLibrarian::Album do
       expect(@album.genre).to        eq(song.genre)
     end
 
+    it "has a nil for the cover and big cover" do
+      FileUtils.rm_f [@cover_file, @big_cover_file]
+
+      load_album
+
+      expect(@album.cover).to     be_nil
+      expect(@album.big_cover).to be_nil
+    end
+
+    it "has a cover and a big cover" do
+      expect(File.exists? @album.cover).to     be(true)
+      expect(File.exists? @album.big_cover).to be(true)
+    end
+
     describe "#check_case!" do
       it "modifies the text tags" do
         @album.title        = "title"
@@ -90,5 +114,13 @@ describe AudioLibrarian::Album do
       end
     end
   end
+
+  it "extracts data from multiple songs"
+
+  it "manipulates with multiple discs"
+
+  it "generates cover from the big cover"
+
+  it "copies the cover as a folder image"
 
 end
