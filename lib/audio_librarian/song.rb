@@ -3,7 +3,7 @@ require 'titleize'
 
 class AudioLibrarian::Song
 
-  attr_reader :path, :id3
+  attr_reader   :path, :id3
   attr_accessor :disc_number, :disc_total, :track_number, :track_total
 
   def initialize path

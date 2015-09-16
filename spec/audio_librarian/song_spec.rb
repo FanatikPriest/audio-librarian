@@ -12,7 +12,7 @@ describe AudioLibrarian::Song do
   end
 
   before :example do
-    load_mp3_fixture "empty_mp3"
+    load_mp3_fixture
     load_jpg_fixture
 
     load_song
