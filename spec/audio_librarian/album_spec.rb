@@ -117,6 +117,34 @@ describe AudioLibrarian::Album do
         expect(@album.genre).to        eq("Genre")
       end
     end
+
+    describe "#valid?" do
+      subject { @album }
+
+      it { is_expected.to be_valid }
+
+      it "is not valid if any of the tags are missing" do
+        tags = %w[title artist album_artist year genre]
+
+        tags.each do |tag|
+          @album.send "#{tag}=", nil
+
+          expect(@album).to_not be_valid
+
+          load_album
+        end
+      end
+
+      context "with missing cover images" do
+        before :example do
+          FileUtils.rm_f [@cover_file, @big_cover_file]
+
+          load_album
+        end
+
+        it { is_expected.to_not be_valid }
+      end
+    end
   end
 
   context "with multiple songs" do
@@ -177,6 +205,7 @@ describe AudioLibrarian::Album do
       end
     end
   end
+
 
   it "manipulates multiple discs"
 

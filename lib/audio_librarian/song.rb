@@ -52,7 +52,7 @@ class AudioLibrarian::Song
       pic_type:    3
     }
 
-    @id3.tag2.add_picture(File.open(image_file, "rb").read, options)
+    @id3.tag2.add_picture(File.open(image_file, "rb").read, options) unless image_file.nil?
   end
 
   def cover
@@ -66,6 +66,12 @@ class AudioLibrarian::Song
       value = send tag
       send(tag + "=", value.downcase.titleize) unless value.nil?
     end
+  end
+
+  def valid?
+    tags = %w[title album album_artist genre year disc_number disc_total track_number track_total cover]
+
+    tags.all? { |tag| send(tag) != nil }
   end
 
   private

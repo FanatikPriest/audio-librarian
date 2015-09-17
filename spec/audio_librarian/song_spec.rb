@@ -122,6 +122,29 @@ describe AudioLibrarian::Song do
     end
   end
 
+  describe "#valid?" do
+    before :example do
+      load_tagged_mp3
+      load_song
+    end
+
+    it "returns true for a song that has all its tags set correctly" do
+      expect(@song).to be_valid
+    end
+
+    it "returns false if any of the tags is missing" do
+      tags = %w[title album album_artist genre year disc_number disc_total track_number track_total cover]
+
+      tags.each do |tag|
+        @song.send "#{tag}=", nil
+
+        expect(@song).to_not be_valid
+
+        load_song
+      end
+    end
+  end
+
   it "renames the song's file according to the tags"
 
 end

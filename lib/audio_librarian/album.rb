@@ -51,6 +51,10 @@ class AudioLibrarian::Album
     end
   end
 
+  def valid?
+    tags_valid? and songs_valid?
+  end
+
   private
 
   def load_cover_images
@@ -71,6 +75,16 @@ class AudioLibrarian::Album
     values = songs.map(&tag).uniq
 
     values.size == 1 ? values.first : values
+  end
+
+  def tags_valid?
+    tags = %w[title artist album_artist year genre cover big_cover]
+
+    tags.all? { |tag| send(tag) != nil }
+  end
+
+  def songs_valid?
+    songs.all?(&:valid?)
   end
 
 end
