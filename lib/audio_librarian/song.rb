@@ -91,17 +91,19 @@ class AudioLibrarian::Song
   end
 
   def generate_tpos
-    if disc_number and disc_total
-      @id3.tag2["TPOS"] = "#{disc_number}/#{disc_total}"
+    if @disc_number > 0 and @disc_total > 0
+      @id3.tag2["TPOS"] = "#{@disc_number}/#{@disc_total}"
     end
   end
 
   def generate_trck
-    if track_number
-      @id3.tag2["TRCK"] = if track_total
-                            "#{track_number}/#{track_total}"
+    if @track_number
+      @id3.tag.tracknum = nil #overshadows the manual setting of the TRCK tag
+
+      @id3.tag2["TRCK"] = if @track_total
+                            "#{@track_number}/#{@track_total}"
                           else
-                            "#{track_number}"
+                            "#{@track_number}"
                           end
     end
   end

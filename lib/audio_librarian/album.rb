@@ -24,13 +24,11 @@ class AudioLibrarian::Album
   def extract_data
     raise "No songs to extract data from" if songs.count == 0
 
-    song = songs.first
-
-    @title        = song.album
-    @artist       = song.artist
-    @album_artist = song.album_artist
-    @year         = song.year
-    @genre        = song.genre
+    @title        = tag_values :album
+    @artist       = tag_values :artist
+    @album_artist = tag_values :album_artist
+    @year         = tag_values :year
+    @genre        = tag_values :genre
   end
 
   def check_case!
@@ -67,6 +65,12 @@ class AudioLibrarian::Album
       FileUtils.cp @cover, folder_image_path
       @folder_image = folder_image_path
     end
+  end
+
+  def tag_values tag
+    values = songs.map(&tag).uniq
+
+    values.size == 1 ? values.first : values
   end
 
 end

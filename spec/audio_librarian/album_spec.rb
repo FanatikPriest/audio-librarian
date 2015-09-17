@@ -119,10 +119,69 @@ describe AudioLibrarian::Album do
     end
   end
 
-  it "extracts data from multiple songs"
+  context "with multiple songs" do
+    before :example do
+      @mp3_file_paths = ["first", "second", "three"].map { |name| File.join(@album_dir, "#{name}.mp3") }
 
-  it "manipulates with multiple discs"
+      @mp3_file_paths.each { |file| load_tagged_mp3 file }
+    end
+
+    context "with matching tags" do
+      before :example do
+        @mp3_file_paths.each.with_index do |path, index|
+          song = AudioLibrarian::Song.new path
+
+          song.title = "Song #{index}"
+          song.track_number = (index + 1)
+          song.track_total  = @mp3_file_paths.count
+
+          song.save_tags
+        end
+
+        load_album
+      end
+
+      it "extracts album data from the songs" do
+        expect(@album.title).to        eq("Album Name")
+        expect(@album.artist).to       eq("Artist")
+        expect(@album.album_artist).to eq("Album Artist")
+        expect(@album.genre).to        eq("Genre")
+      end
+    end
+
+    context "with conflicting tags" do
+      before :example do
+        @mp3_file_paths.each.with_index do |path, index|
+          song = AudioLibrarian::Song.new path
+
+          song.title = "Song #{index}"
+          song.track_number = (index + 1)
+          song.track_total  = @mp3_file_paths.count
+
+          song.album        += " #{index}"
+          song.artist       += " #{index}"
+          song.album_artist += " #{index}"
+          song.genre        += " #{index}"
+
+          song.save_tags
+        end
+
+        load_album
+      end
+
+      it "extracts album data from the songs" do
+        expect(@album.title).to        eq(["Album Name 0", "Album Name 1", "Album Name 2"])
+        expect(@album.artist).to       eq(["Artist 0", "Artist 1", "Artist 2"])
+        expect(@album.album_artist).to eq(["Album Artist 0", "Album Artist 1", "Album Artist 2"])
+        expect(@album.genre).to        eq(["Genre 0", "Genre 1", "Genre 2"])
+      end
+    end
+  end
+
+  it "manipulates multiple discs"
 
   it "generates cover from the big cover"
+
+  it "moves the files in a given location"
 
 end

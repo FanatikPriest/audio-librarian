@@ -122,4 +122,6 @@ describe AudioLibrarian::Song do
     end
   end
 
+  it "renames the song's file according to the tags"
+
 end
