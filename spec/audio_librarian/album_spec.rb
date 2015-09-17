@@ -45,7 +45,7 @@ describe AudioLibrarian::Album do
       song = @album.songs.first
 
       expect(song).to be_a(AudioLibrarian::Song)
-      expect(song.path).to eq(@mp3_file)
+      expect(song.file).to eq(@mp3_file)
     end
 
     it "extracts its tag data from the song" do

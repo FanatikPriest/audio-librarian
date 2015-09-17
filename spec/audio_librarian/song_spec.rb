@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe AudioLibrarian::Song do
 
-  def load_song
-    @song = AudioLibrarian::Song.new TEMP_MP3_FILE
+  def load_song file = TEMP_MP3_FILE
+    @song = AudioLibrarian::Song.new file
   end
 
   def update_song
@@ -20,6 +20,10 @@ describe AudioLibrarian::Song do
 
   after :example do
     unload_fixtures
+  end
+
+  it 'has a file' do
+    expect(@song.file).to eq(TEMP_MP3_FILE)
   end
 
   it 'has modifiable tags' do
@@ -145,6 +149,39 @@ describe AudioLibrarian::Song do
     end
   end
 
-  it "renames the song's file according to the tags"
+  describe "#organize_file" do
+    before :example do
+      @temp_dir      = Dir.mktmpdir
+      @mp3_file_path = File.join(@temp_dir, "first.mp3")
+
+      load_tagged_mp3 @mp3_file_path
+
+      load_song File.new(@mp3_file_path)
+    end
+
+    after :example do
+      FileUtils.rm_rf @temp_dir
+    end
+
+    it "renames the file according to the tags" do
+      result_title = "1 - Title.mp3"
+
+      expect(@song.file.path).to_not end_with(result_title)
+
+      @song.organize_file
+
+      expect(@song.file.path).to end_with(result_title)
+    end
+
+    it "replaces reserved characters in a file name" do
+      reserved_characters = '"*:<>?\/|'
+
+      @song.title = reserved_characters
+
+      @song.organize_file
+
+      expect(@song.file.path).to end_with("1 - #{"-" * reserved_characters.size}.mp3")
+    end
+  end
 
 end

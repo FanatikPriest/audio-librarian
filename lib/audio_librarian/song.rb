@@ -3,11 +3,11 @@ require 'titleize'
 
 class AudioLibrarian::Song
 
-  attr_reader   :path, :id3
+  attr_reader   :file, :id3
   attr_accessor :disc_number, :disc_total, :track_number, :track_total
 
-  def initialize path
-    @path = path
+  def initialize file
+    @file = file
 
     reload_tags
   end
@@ -17,7 +17,7 @@ class AudioLibrarian::Song
   end
 
   def reload_tags
-    @id3 = Mp3Info.new @path
+    @id3 = Mp3Info.new @file
 
     read_tpos
     read_trck
@@ -72,6 +72,17 @@ class AudioLibrarian::Song
     tags = %w[title album album_artist genre year disc_number disc_total track_number track_total cover]
 
     tags.all? { |tag| send(tag) != nil }
+  end
+
+  def organize_file
+    dirname       = Pathname.new(@file).dirname
+    escaped_title = title.gsub /["\*\:\<\>\?\\\/\|]/, "-"
+
+    new_file_path = File.join(dirname, "#{track_number} - #{escaped_title}.mp3")
+
+    FileUtils.mv @file, new_file_path
+
+    @file = File.new(new_file_path)
   end
 
   private
