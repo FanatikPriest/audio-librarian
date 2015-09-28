@@ -108,9 +108,11 @@ class AudioLibrarian::Song
   end
 
   def generate_tpos
-    if @disc_number > 0 and @disc_total > 0
-      @id3.tag2["TPOS"] = "#{@disc_number}/#{@disc_total}"
-    end
+    @id3.tag2["TPOS"] = if @disc_number > 0 and @disc_total > 0
+                          "#{@disc_number}/#{@disc_total}"
+                        else
+                          nil
+                        end
   end
 
   def generate_trck

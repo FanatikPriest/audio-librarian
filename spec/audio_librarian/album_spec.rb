@@ -151,7 +151,7 @@ describe AudioLibrarian::Album do
     before :example do
       @mp3_file_paths = ["first", "second", "three"].map { |name| File.join(@album_dir, "#{name}.mp3") }
 
-      @mp3_file_paths.each { |file| load_tagged_mp3 file }
+      @mp3_file_paths.each { |path| load_tagged_mp3 path }
     end
 
     context "with matching tags" do
@@ -206,11 +206,82 @@ describe AudioLibrarian::Album do
     end
   end
 
+  context "with two organized discs" do
+    before :example do
+      # two folders
+      # two songs in each
+      @cd1, @cd2 = [1, 2].map { |num| FileUtils.mkdir File.join(@album_dir, "CD #{num}") }
 
-  it "manipulates multiple discs"
+      [@cd1, @cd2].each.with_index do |cd, disc_number|
+        [1, 2].map do |num|
+          path = File.join(cd, "#{num}.mp3")
+
+          load_tagged_mp3 path
+
+          song = AudioLibrarian::Song.new path
+
+          song.track_number = num
+          song.track_total  = 2
+          song.disc_number  = disc_number + 1
+          song.disc_total   = 2
+
+          song.save_tags
+        end
+      end
+
+      load_album
+    end
+
+    context "with correct tags" do
+      it "reads all songs" do
+        expect(@album.songs.count).to eq(4)
+      end
+
+      it "updates songs' tags" do
+        @album.title = "Platinum Album"
+
+        @album.update_songs_tags
+
+        @album.songs.each do |song|
+          expect(song.album).to eq("Platinum Album")
+        end
+      end
+    end
+
+    it "adds the correct disc-related tags" do
+      @album.songs.each do |song|
+        song.disc_number  = 0
+        song.disc_total   = 0
+
+        song.save_tags
+      end
+
+      @album.reload
+
+      @album.update_songs_tags
+
+      expect(@album.songs.map(&:disc_number)).to eq([1, 1, 2, 2])
+
+      expect(@album.songs.map(&:disc_total)).to all( eq 2 )
+    end
+  end
+
+  context "with two unorganized discs" do
+    before :example do
+      # four songs in the main directory, tagged by pairs in separate discs
+    end
+
+    it "reads all songs"
+  end
 
   it "generates cover from the big cover"
 
-  it "moves the files in a given location"
+  it "moves the song and image files in a given location"
+
+  it "copies the cover and folder images in each disc folder"
+
+  it "moves all additional files that are present in the folder"
+
+  it "lists unused files"
 
 end
