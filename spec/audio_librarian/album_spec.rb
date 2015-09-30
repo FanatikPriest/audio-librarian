@@ -98,6 +98,14 @@ describe AudioLibrarian::Album do
       expect(File.exists? @album.big_cover).to be(true)
     end
 
+    it "generates cover from the big cover" do
+      FileUtils.rm_f @cover_file
+
+      load_album
+
+      expect(File.exists? @album.cover).to be(true)
+    end
+
     it "copies the cover as a folder image" do
       expect(File.exists? File.join(@album_dir, "folder.jpg")).to be(true)
     end
@@ -266,16 +274,6 @@ describe AudioLibrarian::Album do
     end
   end
 
-  context "with two unorganized discs" do
-    before :example do
-      # four songs in the main directory, tagged by pairs in separate discs
-    end
-
-    it "reads all songs"
-  end
-
-  it "generates cover from the big cover"
-
   it "moves the song and image files in a given location"
 
   it "copies the cover and folder images in each disc folder"
@@ -283,5 +281,7 @@ describe AudioLibrarian::Album do
   it "moves all additional files that are present in the folder"
 
   it "lists unused files"
+
+  it "supports unorganized multiple discs"
 
 end

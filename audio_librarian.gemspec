@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "ruby-mp3info", "~> 0.8.7"
   spec.add_development_dependency "pry",          "~> 0.10.1"
   spec.add_development_dependency "titleize"
+  spec.add_development_dependency "rmagick",      "~> 2.15.4"
 end

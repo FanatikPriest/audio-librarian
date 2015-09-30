@@ -1,6 +1,7 @@
 require 'titleize'
 
 require 'audio_librarian/song'
+require 'audio_librarian/utils/image_manager'
 
 class AudioLibrarian::Album
 
@@ -69,6 +70,12 @@ class AudioLibrarian::Album
   def load_cover_images
     @cover     = Dir["#{@dir.path}/cover.{jpg,png}"].first
     @big_cover = Dir["#{@dir.path}/big cover.{jpg,png}"].first
+
+    if @big_cover and not @cover
+      AudioLibrarian::Utils::ImageManager.create_cover_image @big_cover
+
+      @cover = Dir["#{@dir.path}/cover.{jpg,png}"].first
+    end
 
     if @cover
       pic_type          = Pathname.new(@cover).extname
